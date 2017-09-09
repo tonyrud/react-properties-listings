@@ -13,19 +13,22 @@ class GoogleMap extends React.Component {
     const { activeProperty } = nextProps
     const { latitude, longitude, index } = activeProperty
 
-    const { markers } = this.state
-
     // hide all other info boxes
-    markers.forEach(marker => {
-      marker.iw.close()
-    })
-
+    this.hideAll()
     // show active property info window
-    markers[index] &&
-      markers[index].iw.open(
-        this.map,
-        markers[index]
-      )
+    this.showIW(index)
+  }
+  
+  showIW(index) {
+    const {markers} = this.state
+    markers[index] && markers[index].iw.open(this.map, markers[index])
+  }
+  
+  hideAll() {
+    const {markers} = this.state
+      markers.forEach(marker => {
+        marker.iw.close()
+      })
   }
 
   componentDidMount() {
@@ -73,21 +76,14 @@ class GoogleMap extends React.Component {
       markers.push(this.marker)
 
       // show active property info window
-      markers[activePropertyIndex] &&
-        markers[activePropertyIndex].iw.open(
-          this.map,
-          markers[activePropertyIndex]
-        )
+      this.showIW(activePropertyIndex)
 
       this.marker.addListener('click', function() {
         // hide all info boxes
-        markers.forEach(marker => {
-          marker.iw.close()
-        })
-
+        this.hideAll()
         // set active property into state
         setActiveProperty(prop)
-      })
+      }.bind(this))
     })
   }
 
