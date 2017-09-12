@@ -15,22 +15,38 @@ class App extends React.Component {
       properties: data.properties,
       activeProperty: data.properties[0],
       filterIsVisible: false,
-      filterBedrooms: 'any'
+      filterBedrooms: 'any',
+      filteredProperties: [],
+      isFiltering: false
     }
 
     this.setActiveProperty = this.setActiveProperty.bind(this)
     this.toggleFilter = this.toggleFilter.bind(this)
     this.handleFilterChange = this.handleFilterChange.bind(this)
+    this.filterProperties = this.filterProperties.bind(this)
   }
 
   handleFilterChange(e) {
     const target = e.target
     const {value, name} = target
-    // console.log(value, name)
     this.setState({
-      [name]: value,
-
+      [name]: value
+    }, function(params) {
+       // run after state has been set in callback, can also use componentDidUpdate
+      this.filterProperties()
     })
+  }
+
+  filterProperties() {
+    const {properties, filterBedrooms} = this.state
+    const isFiltering = filterBedrooms !== 'any'
+
+    console.log(isFiltering, filterBedrooms)
+    this.setState({
+      filteredProperties: ['test', 'worked'],
+      isFiltering
+    })
+
   }
 
   toggleFilter(e) {
