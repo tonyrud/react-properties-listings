@@ -41,10 +41,24 @@ class App extends React.Component {
     const {properties, filterBedrooms} = this.state
     const isFiltering = filterBedrooms !== 'any'
 
-    console.log(isFiltering, filterBedrooms)
+    const getFilteredProperties = (properties) => {
+      const filteredProperties = []
+      properties.map(property => {
+        const {bedrooms} = property
+        const match = bedrooms === parseInt(filterBedrooms) || filterBedrooms === 'any'
+
+        // if match is true
+        match && filteredProperties.push(property)
+      })
+
+      return filteredProperties
+    }
+
+    // console.log(isFiltering, filterBedrooms)
     this.setState({
-      filteredProperties: ['test', 'worked'],
-      isFiltering
+      filteredProperties: getFilteredProperties(properties),
+      isFiltering,
+      activeProperty: getFilteredProperties(properties)[0]
     })
 
   }
@@ -74,7 +88,9 @@ class App extends React.Component {
   }
 
   render() {
-    const { properties, activeProperty, filterIsVisible } = this.state
+    const { properties, activeProperty, filterIsVisible, filteredProperties, isFiltering } = this.state
+
+    const propertiesList = isFiltering ? filteredProperties : properties
 
     return (
       <div>
@@ -85,7 +101,7 @@ class App extends React.Component {
 
           <div className="cards container">
             <div className="cards-list row ">
-              {properties.map(property =>
+              {propertiesList.map(property =>
                 <Card
                   activeProperty={activeProperty}
                   key={property._id}
@@ -103,6 +119,8 @@ class App extends React.Component {
           properties={properties}
           activeProperty={activeProperty}
           setActiveProperty={this.setActiveProperty}
+          filteredProperties={filteredProperties}
+          isFiltering={isFiltering}
         />
 
         {/* mapContainer - End */}

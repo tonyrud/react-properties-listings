@@ -18,6 +18,29 @@ class GoogleMap extends React.Component {
     // show active property info window
     this.showIW(index)
   }
+
+  componentDidUpdate(){
+    const {filteredProperties, isFiltering} = this.props
+    const {markers} = this.state
+
+    markers.forEach(marker => {
+      const {property} = marker // associated property
+
+      if (isFiltering) {
+        // show markers of filtered listings
+        if (filteredProperties.includes(property)) {
+          markers[property.index].setVisible(true)
+        } else {
+          // hide other markers
+          markers[property.index].setVisible(false)
+        }
+        
+      } else {
+        markers[property.index].setVisible(true)
+        // show all markers
+      }
+    })
+  }
   
   showIW(index) {
     const {markers} = this.state
@@ -49,8 +72,8 @@ class GoogleMap extends React.Component {
     const activePropertyIndex = activeProperty.index
     const { markers } = this.state
 
-    properties.map(prop => {
-      const { latitude, longitude, index, address } = prop
+    properties.map(property => {
+      const { latitude, longitude, index, address } = property
       this.marker = new google.maps.Marker({
         position: { lat: latitude, lng: longitude },
         map: this.map,
@@ -64,7 +87,8 @@ class GoogleMap extends React.Component {
           size: new google.maps.Size(22, 55),
           origin: new google.maps.Point(0, -15),
           anchor: new google.maps.Point(11, 52)
-        }
+        },
+        property
       })
 
       const iw = new google.maps.InfoWindow({
@@ -98,7 +122,10 @@ class GoogleMap extends React.Component {
 
 GoogleMap.propTypes = {
   properties: PropTypes.array.isRequired,
-  setActiveProperty: PropTypes.func.isRequired
+  setActiveProperty: PropTypes.func.isRequired,
+  activeProperty: PropTypes.object.isRequired,
+  filteredProperties: PropTypes.array,
+  isFiltering: PropTypes.bool.isRequired
 }
 
 export default GoogleMap
