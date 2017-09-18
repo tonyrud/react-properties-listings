@@ -2,9 +2,9 @@ import React, { Component, PropTypes } from 'react'
 
 class Filter extends Component {
   render () {
-    const {toggleFilter, handleFilterChange} = this.props
+    const {toggleFilter, handleFilterChange, clearFilter} = this.props
     return (
-      <form className="filter">
+      <form ref={input => this.form = input} className="filter">
         <div className="filterBox">
           <label htmlFor="filterBedrooms">Bedrooms</label>
           <select onChange={(e)=>handleFilterChange(e)} id="filterBedrooms" name="filterBedrooms">
@@ -16,7 +16,7 @@ class Filter extends Component {
         </div>
         <div className="filterBox">
           <label htmlFor="filterBathrooms">Bathrooms</label>
-          <select id="filterBathrooms" name="filterBathrooms">
+          <select onChange={(e)=>handleFilterChange(e)} id="filterBathrooms" name="filterBathrooms">
             <option value="any">Any</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -24,7 +24,7 @@ class Filter extends Component {
         </div>
         <div className="filterBox">
           <label htmlFor="filterCars">Car Spaces</label>
-          <select id="filterCars" name="filterCars">
+          <select onChange={(e)=>handleFilterChange(e)} id="filterCars" name="filterCars">
             <option value="any">Any</option>
             <option value="0">0</option>
             <option value="1">1</option>
@@ -63,7 +63,7 @@ class Filter extends Component {
         </div>
         <div className="filterBox">
           <label>&nbsp;</label>
-          <button className="btn-clear">Clear</button>
+          <button className="btn-clear" onClick={(e) => clearFilter(e, this.form)}>Clear</button>
         </div>
         <button onClick={(e) => toggleFilter(e)} className="btn-filter">
           <strong>X</strong>
@@ -76,6 +76,7 @@ class Filter extends Component {
 
 Filter.propTypes = {
   toggleFilter: PropTypes.func.isRequired,
+  clearFilter: PropTypes.func.isRequired,
   handleFilterChange: PropTypes.func.isRequired
 }
 
