@@ -10,13 +10,17 @@ class GoogleMap extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { activeProperty, filteredProperties } = nextProps
+    const { activeProperty, filteredProperties, isFiltering } = nextProps
     const { latitude, longitude, index } = activeProperty
 
-    // hide all other info boxes
-    this.hideAll()
     // show active property info window
-    filteredProperties.length !== 0 && this.showIW(index)
+
+    if (isFiltering && filteredProperties.length === 0) {
+      this.hideAll()
+    } else {
+      this.hideAll()
+      this.showIW(index)
+    }
   }
 
   componentDidUpdate(){

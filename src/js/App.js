@@ -19,6 +19,9 @@ class App extends React.Component {
       filterBedrooms: 'any',
       filterBathrooms: 'any',
       filterCars: 'any',
+      filterSort: 'any',
+      priceFrom: 500000,
+      priceTo: 1000000,
       filteredProperties: [],
       isFiltering: false
     }
@@ -48,9 +51,13 @@ class App extends React.Component {
     e.preventDefault()
 
     this.setState({
+      properties: this.state.properties.sort((a, b) => a.index - b.index),
       filterBedrooms: 'any',
       filterBathrooms: 'any',
       filterCars: 'any',
+      filterSort: 'any',
+      priceFrom: 500000,
+      priceTo: 1000000,
       filteredProperties: [],
       isFiltering: false,
       activeProperty: this.state.properties[0]
@@ -64,26 +71,47 @@ class App extends React.Component {
       properties,
       filterBedrooms,
       filterBathrooms,
-      filterCars
+      filterCars,
+      filterSort,
+      priceFrom,
+      priceTo,
+      propertiesList
     } = this.state
+
     const isFiltering =
       filterBedrooms !== 'any' ||
       filterBathrooms !== 'any' ||
-      filterBathrooms !== 'any'
+      filterCars !== 'any' ||
+      priceFrom !== '0' ||
+      priceTo !== '1000001' ||
+      filterSort !== 'any'
 
     const getFilteredProperties = properties => {
       const filteredProperties = []
       properties.map(property => {
-        const { bedrooms, bathrooms, carSpaces } = property
+        const { bedrooms, bathrooms, carSpaces, price } = property
         const match =
           (bedrooms === parseInt(filterBedrooms) || filterBedrooms === 'any') &&
           (bathrooms === parseInt(filterBathrooms) ||
             filterBathrooms === 'any') &&
-          (carSpaces === parseInt(filterCars) || filterCars === 'any')
+          (carSpaces === parseInt(filterCars) || filterCars === 'any') &&
+          (price >= priceFrom && price <= priceTo)
 
         // if match is true
         match && filteredProperties.push(property)
       })
+
+      // sort the properties list
+
+      switch (filterSort) {
+        case '0':
+          filteredProperties.sort((a, b) => a.price - b.price)
+
+          break
+        case '1':
+          filteredProperties.sort((a, b) => b.price - a.price)
+          break
+      }
 
       return filteredProperties
     }
@@ -125,7 +153,8 @@ class App extends React.Component {
       activeProperty,
       filterIsVisible,
       filteredProperties,
-      isFiltering
+      isFiltering,
+      filterSort
     } = this.state
 
     const propertiesList = isFiltering ? filteredProperties : properties
@@ -142,7 +171,11 @@ class App extends React.Component {
           />
 
           <div className="cards container">
-            <div className={`cards-list row ${propertiesList.length === 0 ? 'is-empty':''}`}>
+            <div
+              className={`cards-list row ${propertiesList.length === 0
+                ? 'is-empty'
+                : ''}`}
+            >
               {propertiesList.map(property => (
                 <Card
                   activeProperty={activeProperty}
@@ -153,7 +186,10 @@ class App extends React.Component {
               ))}
               {isFiltering &&
               propertiesList.length === 0 && (
-                <p className="warning"><img src={image}/><br/>No properties were found.</p>
+                <p className="warning">
+                  <img src={image} />
+                  <br />No properties were found.
+                </p>
               )}
             </div>
           </div>

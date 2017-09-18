@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import {priceFormat} from './utils/Formatters'
 
 const Card = ({ property, activeProperty, setActiveProperty }) => {
   const {
@@ -22,7 +23,7 @@ const Card = ({ property, activeProperty, setActiveProperty }) => {
     >
       <img src={picture} alt={`picture-${city}`} />
       <p className="price">
-        {price}
+        {priceFormat(price)}
       </p>
       <div className="details">
         <span className="index">
